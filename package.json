@@ -1,0 +1,12 @@
+{
+  "name": "AIToolsWebApp",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "cd frontend && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "backend": "cd backend && npm install && npm start",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install"
+  }
+}

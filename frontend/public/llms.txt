@@ -1,0 +1,23 @@
+# AI Tools Library
+
+> Curated AI tools directory, prompt templates, and Learning Zone guides.
+
+## Public pages
+- Home: /
+- Tools: /tools
+- Prompts: /prompts
+- Learning Zone: /learning
+- About: /about
+- Contact: /contact
+
+## Content types
+- Tools: name, description, category, pricing, website URL
+- Prompts: title, content, category, complexity
+- Articles: title, excerpt, markdown content, difficulty, read time
+
+## API (for integrations)
+- Base: /api
+- Health: GET /api/health
+
+## Contact
+- hello@aitoolslib.com

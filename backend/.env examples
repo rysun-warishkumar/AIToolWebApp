@@ -1,0 +1,42 @@
+# Backend Environment Variables
+
+# App Config
+APP_NAME=AI Tools Library
+APP_ENV=development
+APP_DEBUG=true
+APP_URL=http://localhost:3001
+
+# Database
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=ai_tools_db
+DB_USER=root
+DB_PASSWORD=
+
+# JWT
+JWT_SECRET=your_super_secret_jwt_key_change_in_production
+JWT_EXPIRY=86400
+
+# File Upload
+UPLOAD_DIR=uploads
+MAX_FILE_SIZE=5242880
+ALLOWED_EXTENSIONS=jpg,jpeg,png,gif,webp
+
+# CORS
+CORS_ORIGIN=http://localhost:5173
+CORS_CREDENTIALS=true
+
+# Logging
+LOG_LEVEL=info
+LOG_FILE=logs/app.log
+
+# Email (Optional)
+MAIL_DRIVER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=
+MAIL_PASSWORD=
+MAIL_FROM=noreply@aitoolslib.com
+
+# Admin Settings
+ADMIN_EMAIL=admin@aitoolslib.com
