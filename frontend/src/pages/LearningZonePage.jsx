@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useArticles } from '../hooks/useQueries'
 import { SkeletonList } from '../components/common/Skeleton'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 const DIFFICULTIES = [
   { value: '', label: 'All levels' },
@@ -120,9 +121,14 @@ export default function LearningZonePage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
       <Seo
-        title="Learning Zone"
-        description="Tutorials and guides on AI agents, MCP servers, LLMs, prompt engineering, and integrating AI into web apps."
+        title={PAGE_SEO.learning.title}
+        description={PAGE_SEO.learning.description}
+        keywords={PAGE_SEO.learning.keywords}
         path="/learning"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Learning Zone', url: '/learning' },
+        ]}
       />
 
       <div className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-12">

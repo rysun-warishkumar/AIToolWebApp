@@ -1,10 +1,11 @@
 import LegalPageLayout from '../components/layout/LegalPageLayout'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 export default function TermsPage() {
   return (
     <>
-    <Seo title="Terms of Service" description="Terms of Service for AI Tools Library." path="/terms" />
+    <Seo title={PAGE_SEO.terms.title} description={PAGE_SEO.terms.description} path="/terms" />
     <LegalPageLayout title="Terms of Service" subtitle="Rules for using AI Tools Library">
       <section>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">1. Acceptance</h2>

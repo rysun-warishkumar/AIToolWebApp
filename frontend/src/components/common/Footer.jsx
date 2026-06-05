@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Twitter, Github, Linkedin } from 'lucide-react'
+import { SITE } from '../../config/site'
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear()
@@ -16,7 +17,7 @@ export const Footer = () => {
               <span className="font-bold text-lg">AI Tools</span>
             </div>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Discover and share the best AI tools and prompts
+              {SITE.tagline}
             </p>
           </div>
 
@@ -56,7 +57,7 @@ export const Footer = () => {
         <div className="h-px bg-gray-200 dark:bg-dark-700 my-8" />
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
-          <p>&copy; {currentYear} AI Tools Library. All rights reserved.</p>
+          <p>&copy; {currentYear} {SITE.name}. All rights reserved.</p>
           <div className="flex flex-wrap justify-center gap-6">
             <Link to="/privacy" className="hover:text-primary-600">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-primary-600">Terms of Service</Link>

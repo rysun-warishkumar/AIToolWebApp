@@ -1,10 +1,11 @@
 import LegalPageLayout from '../components/layout/LegalPageLayout'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 export default function CookiePolicyPage() {
   return (
     <>
-    <Seo title="Cookie Policy" description="Cookie Policy for AI Tools Library." path="/cookie-policy" />
+    <Seo title={PAGE_SEO.cookies.title} description={PAGE_SEO.cookies.description} path="/cookie-policy" />
     <LegalPageLayout title="Cookie Policy" subtitle="How we use cookies and similar technologies">
       <section>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">What are cookies?</h2>

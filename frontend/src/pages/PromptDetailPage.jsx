@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Copy, Share2, ChevronLeft } from 'lucide-react'
 import { usePrompt } from '../hooks/useQueries'
-import { copyToClipboard } from '../utils/helpers'
+import { copyToClipboard, getMediaUrl } from '../utils/helpers'
 import { SkeletonDetailPage } from '../components/common/Skeleton'
+import PromptExampleImage from '../components/prompts/PromptExampleImage'
+import Seo, { buildPromptSchema } from '../components/seo/Seo'
 import { toast } from 'sonner'
 
 export default function PromptDetailPage() {
@@ -37,6 +39,19 @@ export default function PromptDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
+      <Seo
+        title={prompt.title}
+        description={prompt.short_description || prompt.preview_text || prompt.content?.slice(0, 160)}
+        path={`/prompts/${prompt.id}`}
+        image={prompt.example_image_url ? getMediaUrl(prompt.example_image_url) : undefined}
+        keywords={[prompt.category_name, prompt.complexity, 'AI prompt template'].filter(Boolean)}
+        jsonLd={buildPromptSchema(prompt)}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Prompts', url: '/prompts' },
+          { name: prompt.title, url: `/prompts/${prompt.id}` },
+        ]}
+      />
       <div className="bg-white dark:bg-dark-800 border-b border-gray-200 dark:border-dark-700">
         <div className="max-w-4xl mx-auto px-4 py-8">
           <button
@@ -61,6 +76,15 @@ export default function PromptDetailPage() {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-12">
+        {prompt.example_image_url && (
+          <div className="mb-8 rounded-xl overflow-hidden border border-gray-200 dark:border-dark-700 shadow-sm">
+            <PromptExampleImage
+              title={prompt.title}
+              imageUrl={prompt.example_image_url}
+              variant="detail"
+            />
+          </div>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             {/* Prompt Content */}

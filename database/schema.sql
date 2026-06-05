@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS prompts (
     short_description VARCHAR(500),
     content LONGTEXT NOT NULL,
     preview_text TEXT,
+    example_image_url VARCHAR(500),
     category_id INT NOT NULL,
     prompt_type ENUM('system', 'user', 'instruction', 'template') DEFAULT 'template',
     industry VARCHAR(100),

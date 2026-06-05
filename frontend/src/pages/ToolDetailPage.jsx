@@ -3,6 +3,8 @@ import { ExternalLink, Bookmark, Share2, ChevronLeft } from 'lucide-react'
 import { useTool } from '../hooks/useQueries'
 import { SkeletonDetailPage } from '../components/common/Skeleton'
 import ToolLogo from '../components/tools/ToolLogo'
+import Seo, { buildToolSchema } from '../components/seo/Seo'
+import { getMediaUrl } from '../utils/helpers'
 
 export default function ToolDetailPage() {
   const { id } = useParams()
@@ -29,6 +31,19 @@ export default function ToolDetailPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
+      <Seo
+        title={tool.name}
+        description={tool.short_description || tool.description?.slice(0, 160)}
+        path={`/tools/${tool.id}`}
+        image={tool.logo_url ? getMediaUrl(tool.logo_url) : undefined}
+        keywords={[tool.category_name, tool.pricing_model, 'AI tool'].filter(Boolean)}
+        jsonLd={buildToolSchema(tool)}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Tools', url: '/tools' },
+          { name: tool.name, url: `/tools/${tool.id}` },
+        ]}
+      />
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-gray-200 dark:border-dark-700">
         <div className="max-w-4xl mx-auto px-4 py-8">

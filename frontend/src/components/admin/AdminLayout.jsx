@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { LayoutDashboard, Wrench, BookMarked, GraduationCap, LogOut, Menu, X, ExternalLink } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
+import Seo from '../seo/Seo'
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
@@ -22,6 +23,7 @@ export default function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-gray-50 dark:bg-dark-900">
+      <Seo title="Admin" noindex path="/admin" />
       <aside
         className={`${
           sidebarOpen ? 'w-64' : 'w-20'

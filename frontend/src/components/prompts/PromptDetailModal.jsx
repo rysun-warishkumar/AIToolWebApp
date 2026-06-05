@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { X, Copy, Share2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { promptsAPI } from '../../services/api'
+import PromptExampleImage from './PromptExampleImage'
 
 export const PromptDetailModal = ({ prompt, isOpen, onClose }) => {
   const [copyCount, setCopyCount] = useState(prompt?.copy_count ?? 0)
@@ -50,6 +51,19 @@ export const PromptDetailModal = ({ prompt, isOpen, onClose }) => {
         </div>
 
         <div className="p-6 space-y-6">
+          {prompt.example_image_url && (
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Example output</h3>
+              <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-dark-600">
+                <PromptExampleImage
+                  title={prompt.title}
+                  imageUrl={prompt.example_image_url}
+                  variant="detail"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="p-3 bg-gray-50 dark:bg-dark-700 rounded-lg">
               <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Category</p>

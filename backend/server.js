@@ -73,6 +73,14 @@ const initLearningArticlesTable = async () => {
     /* column may already exist */
   }
 }
+
+const initPromptsExampleImageColumn = async () => {
+  try {
+    await query('ALTER TABLE prompts ADD COLUMN example_image_url VARCHAR(500) NULL')
+  } catch (_) {
+    /* column may already exist */
+  }
+}
 const seedLearningArticles = async () => {
   const [{ count }] = await query('SELECT COUNT(*) AS count FROM learning_articles')
   if (count > 0) return
@@ -154,6 +162,8 @@ initLearningArticlesTable()
   .then(() => seedLearningArticles())
   .catch((err) => console.error('learning_articles init:', err.message))
 
+initPromptsExampleImageColumn().catch((err) => console.error('prompts example_image_url init:', err.message))
+
 const sendError = (res, status, message) => res.status(status).json({ error: message })
 
 const authMiddleware = async (req, res, next) => {
@@ -184,6 +194,75 @@ const parseIntOrDefault = (value, fallback) => {
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', version: '1.0.0' })
+})
+
+const siteBaseUrl = () => (process.env.APP_URL || 'https://freeaitools.wtechnology.in').replace(/\/$/, '')
+
+const xmlEscape = (s) =>
+  String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+
+app.get('/sitemap.xml', async (_req, res) => {
+  try {
+    const base = siteBaseUrl()
+    const staticPaths = [
+      { loc: '/', pri: '1.0', freq: 'daily' },
+      { loc: '/tools', pri: '0.9', freq: 'daily' },
+      { loc: '/prompts', pri: '0.9', freq: 'daily' },
+      { loc: '/learning', pri: '0.9', freq: 'weekly' },
+      { loc: '/about', pri: '0.6', freq: 'monthly' },
+      { loc: '/contact', pri: '0.6', freq: 'monthly' },
+      { loc: '/privacy', pri: '0.3', freq: 'yearly' },
+      { loc: '/terms', pri: '0.3', freq: 'yearly' },
+      { loc: '/cookie-policy', pri: '0.3', freq: 'yearly' },
+    ]
+
+    const tools = await query('SELECT id, updated_at FROM tools WHERE status = "published" ORDER BY id')
+    const prompts = await query('SELECT id, updated_at FROM prompts WHERE status = "published" ORDER BY id')
+    const articles = await query(
+      'SELECT slug, updated_at FROM learning_articles WHERE status = "published" ORDER BY id'
+    )
+
+    const urls = [
+      ...staticPaths.map((p) => ({ loc: `${base}${p.loc}`, pri: p.pri, freq: p.freq })),
+      ...tools.map((t) => ({
+        loc: `${base}/tools/${t.id}`,
+        pri: '0.7',
+        freq: 'weekly',
+        lastmod: t.updated_at,
+      })),
+      ...prompts.map((p) => ({
+        loc: `${base}/prompts/${p.id}`,
+        pri: '0.7',
+        freq: 'weekly',
+        lastmod: p.updated_at,
+      })),
+      ...articles.map((a) => ({
+        loc: `${base}/learning/${a.slug}`,
+        pri: '0.8',
+        freq: 'monthly',
+        lastmod: a.updated_at,
+      })),
+    ]
+
+    const body = urls
+      .map((u) => {
+        const lastmod = u.lastmod ? `\n    <lastmod>${new Date(u.lastmod).toISOString().split('T')[0]}</lastmod>` : ''
+        return `  <url>\n    <loc>${xmlEscape(u.loc)}</loc>${lastmod}\n    <changefreq>${u.freq}</changefreq>\n    <priority>${u.pri}</priority>\n  </url>`
+      })
+      .join('\n')
+
+    res.type('application/xml')
+    res.send(
+      `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>`
+    )
+  } catch (error) {
+    console.error('sitemap.xml error:', error)
+    res.status(500).type('text/plain').send('Unable to generate sitemap')
+  }
 })
 
 app.get('/api/tools', async (req, res) => {
@@ -837,20 +916,21 @@ app.post('/api/admin/tools/:id/restore', authMiddleware, async (req, res) => {
 })
 
 app.post('/api/admin/prompts', authMiddleware, async (req, res) => {
-  const { title, slug, content, category_id, status, short_description, prompt_type, complexity, is_featured } = req.body
+  const { title, slug, content, category_id, status, short_description, prompt_type, complexity, is_featured, example_image_url } = req.body
   if (!title || !slug || !content || !category_id) {
     return sendError(res, 400, 'Required prompt fields are missing')
   }
 
   try {
     const result = await query(
-      `INSERT INTO prompts (title, slug, short_description, content, category_id, prompt_type, complexity, status, is_featured, created_by)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO prompts (title, slug, short_description, content, example_image_url, category_id, prompt_type, complexity, status, is_featured, created_by)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title,
         slug,
         short_description || '',
         content,
+        example_image_url || null,
         category_id,
         prompt_type || 'template',
         complexity || 'intermediate',
@@ -874,7 +954,7 @@ app.put('/api/admin/prompts/:id', authMiddleware, async (req, res) => {
 
   const fields = []
   const params = []
-  const allowed = ['title', 'slug', 'short_description', 'content', 'prompt_type', 'industry', 'complexity', 'status', 'is_featured']
+  const allowed = ['title', 'slug', 'short_description', 'content', 'example_image_url', 'prompt_type', 'industry', 'complexity', 'status', 'is_featured']
 
   allowed.forEach((key) => {
     if (req.body[key] !== undefined) {

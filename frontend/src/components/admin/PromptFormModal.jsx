@@ -1,15 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Upload, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import FormModal from './FormModal'
 import { useCategories } from '../../hooks/useQueries'
 import { adminAPI, promptsAPI } from '../../services/api'
-import { slug } from '../../utils/helpers'
+import { slug, getMediaUrl } from '../../utils/helpers'
+import PromptExampleImage from '../prompts/PromptExampleImage'
 
 const empty = {
   title: '',
   slug: '',
   short_description: '',
   content: '',
+  example_image_url: '',
   category_id: '',
   prompt_type: 'template',
   complexity: 'intermediate',
@@ -21,6 +24,8 @@ export default function PromptFormModal({ open, onClose, promptId, onSuccess }) 
   const [form, setForm] = useState(empty)
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const fileRef = useRef(null)
   const { data: categories = [] } = useCategories('prompt')
   const isEdit = Boolean(promptId)
 
@@ -40,6 +45,7 @@ export default function PromptFormModal({ open, onClose, promptId, onSuccess }) 
           slug: p.slug || '',
           short_description: p.short_description || '',
           content: p.content || '',
+          example_image_url: p.example_image_url || '',
           category_id: String(p.category_id || ''),
           prompt_type: p.prompt_type || 'template',
           complexity: p.complexity || 'intermediate',
@@ -53,6 +59,25 @@ export default function PromptFormModal({ open, onClose, promptId, onSuccess }) 
 
   const set = (key, value) => setForm((f) => ({ ...f, [key]: value }))
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    try {
+      const res = await adminAPI.uploadMedia(file, 'prompt')
+      const url = res.data?.data?.url
+      if (url) {
+        set('example_image_url', url)
+        toast.success('Example image uploaded')
+      }
+    } catch {
+      toast.error('Image upload failed')
+    } finally {
+      setUploading(false)
+      e.target.value = ''
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!form.title || !form.slug || !form.content || !form.category_id) {
@@ -64,6 +89,7 @@ export default function PromptFormModal({ open, onClose, promptId, onSuccess }) 
       ...form,
       category_id: Number(form.category_id),
       is_featured: form.is_featured ? 1 : 0,
+      example_image_url: form.example_image_url?.trim() || null,
     }
     try {
       if (isEdit) {
@@ -87,14 +113,14 @@ export default function PromptFormModal({ open, onClose, promptId, onSuccess }) 
       open={open}
       onClose={onClose}
       title={isEdit ? 'Edit Prompt' : 'Add Prompt'}
-      subtitle="Published prompts appear on the public prompts page."
+      subtitle="Optional example output image appears on prompt cards when set."
       size="xl"
       footer={
         <>
           <button type="button" onClick={onClose} className="btn-secondary">
             Cancel
           </button>
-          <button type="submit" form="prompt-form" disabled={saving || loading} className="btn-primary disabled:opacity-50">
+          <button type="submit" form="prompt-form" disabled={saving || loading || uploading} className="btn-primary disabled:opacity-50">
             {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
           </button>
         </>
@@ -104,6 +130,58 @@ export default function PromptFormModal({ open, onClose, promptId, onSuccess }) 
         <p className="text-gray-500">Loading...</p>
       ) : (
         <form id="prompt-form" onSubmit={handleSubmit} className="space-y-4">
+          <div className="p-4 rounded-xl border border-gray-200 dark:border-dark-700 bg-gray-50 dark:bg-dark-900/50">
+            <label className="block text-sm font-medium mb-3">Example output image</label>
+            <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-dark-600 mb-4">
+              <PromptExampleImage
+                title={form.title}
+                imageUrl={form.example_image_url}
+                variant="card"
+              />
+            </div>
+            <div className="flex flex-wrap gap-2 mb-3">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="btn-secondary text-sm flex items-center gap-2 disabled:opacity-50"
+              >
+                <Upload className="w-4 h-4" />
+                {uploading ? 'Uploading...' : 'Upload image'}
+              </button>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                className="hidden"
+                onChange={handleImageUpload}
+              />
+              {form.example_image_url && (
+                <button
+                  type="button"
+                  onClick={() => set('example_image_url', '')}
+                  className="btn-secondary text-sm flex items-center gap-2 text-red-600 dark:text-red-400"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Remove
+                </button>
+              )}
+            </div>
+            <div>
+              <label className="block text-xs text-gray-600 dark:text-gray-400 mb-1">Or paste image URL</label>
+              <input
+                className="input text-sm"
+                type="url"
+                value={form.example_image_url}
+                onChange={(e) => set('example_image_url', e.target.value)}
+                placeholder="https://... or /uploads/..."
+              />
+            </div>
+            {form.example_image_url && (
+              <p className="text-xs text-gray-500 truncate mt-2">Preview: {getMediaUrl(form.example_image_url)}</p>
+            )}
+          </div>
+
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Title *</label>

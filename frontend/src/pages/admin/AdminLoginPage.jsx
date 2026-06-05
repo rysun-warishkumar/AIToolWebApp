@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { adminAPI } from '../../services/api'
+import Seo from '../../components/seo/Seo'
 import { toast } from 'sonner'
 
 export default function AdminLoginPage() {
@@ -30,6 +31,8 @@ export default function AdminLoginPage() {
   }
 
   return (
+    <>
+      <Seo title="Admin Login" noindex path="/admin/login" />
     <div className="min-h-screen bg-gradient-to-br from-primary-600 to-purple-600 flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="card p-8">
@@ -92,5 +95,6 @@ Password: password
         </div>
       </div>
     </div>
+    </>
   )
 }

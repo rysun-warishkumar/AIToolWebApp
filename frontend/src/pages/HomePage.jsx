@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom'
-import { ArrowRight, Zap, Sparkles, Search } from 'lucide-react'
-import Seo from '../components/seo/Seo'
+import { useState, useMemo } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { ArrowRight, Sparkles, Search } from 'lucide-react'
+import Seo, { buildFaqSchema } from '../components/seo/Seo'
+import { PAGE_SEO, HOME_FAQ } from '../config/seo'
 import { useTools } from '../hooks/useQueries'
 import { usePrompts } from '../hooks/useQueries'
 import { ToolCard } from '../components/tools/ToolCard'
@@ -8,12 +10,30 @@ import { PromptCard } from '../components/tools/ToolCard'
 import { SkeletonCard, SkeletonList } from '../components/common/Skeleton'
 
 export default function HomePage() {
+  const navigate = useNavigate()
+  const [heroSearch, setHeroSearch] = useState('')
   const { data: tools, isLoading: toolsLoading } = useTools(1, 6, { sortBy: 'popularity_score' })
   const { data: prompts, isLoading: promptsLoading } = usePrompts(1, 6)
 
+  const homeSeo = PAGE_SEO.home
+  const faqJsonLd = useMemo(() => buildFaqSchema(HOME_FAQ), [])
+
+  const handleHeroSearch = (e) => {
+    e.preventDefault()
+    const q = heroSearch.trim()
+    if (q) navigate(`/tools?search=${encodeURIComponent(q)}`)
+    else navigate('/tools')
+  }
+
   return (
     <div className="w-full">
-      <Seo path="/" />
+      <Seo
+        title={homeSeo.title}
+        description={homeSeo.description}
+        keywords={homeSeo.keywords}
+        path="/"
+        jsonLd={faqJsonLd}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 md:py-32 px-4 border-b border-primary-100/80 dark:border-dark-700">
         <div className="absolute inset-0 -z-10">
@@ -55,19 +75,24 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Search Preview */}
-          <div className="max-w-2xl mx-auto">
+          {/* Search */}
+          <form onSubmit={handleHeroSearch} className="max-w-2xl mx-auto">
             <div className="bg-white/90 dark:bg-dark-800/80 p-4 flex items-center gap-3 rounded-xl border border-gray-200/80 dark:border-dark-600 shadow-md shadow-primary-500/5 ring-1 ring-primary-100/50 dark:ring-dark-600">
-              <Search className="w-5 h-5 text-primary-500" />
+              <Search className="w-5 h-5 text-primary-500 shrink-0" />
               <input
-                type="text"
-                placeholder="Search AI tools, prompts..."
+                type="search"
+                name="search"
+                value={heroSearch}
+                onChange={(e) => setHeroSearch(e.target.value)}
+                placeholder="Search free AI tools and prompts..."
                 className="flex-1 bg-transparent outline-none text-gray-700 dark:text-gray-300 placeholder-gray-400"
-                disabled
+                aria-label="Search AI tools and prompts"
               />
-              <Zap className="w-5 h-5 text-primary-600" />
+              <button type="submit" className="btn-primary text-sm py-2 px-4 shrink-0">
+                Search
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </section>
 
@@ -176,6 +201,26 @@ export default function HomePage() {
                   {cat.name}
                 </h3>
               </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ — visible content for SEO & AI search */}
+      <section className="py-16 px-4 bg-white dark:bg-dark-800 border-t border-gray-100 dark:border-dark-700">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+            Frequently asked questions
+          </h2>
+          <div className="space-y-6">
+            {HOME_FAQ.map(({ question, answer }) => (
+              <details key={question} className="card p-5 group">
+                <summary className="font-semibold cursor-pointer text-gray-900 dark:text-white list-none flex justify-between items-center">
+                  {question}
+                  <span className="text-primary-500 text-sm group-open:rotate-180 transition-transform">▼</span>
+                </summary>
+                <p className="mt-3 text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{answer}</p>
+              </details>
             ))}
           </div>
         </div>

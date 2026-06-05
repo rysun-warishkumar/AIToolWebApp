@@ -1,23 +1,33 @@
-# AI Tools Library
+# Free AI Tools Library
 
-> Curated AI tools directory, prompt templates, and Learning Zone guides.
+> https://freeaitools.wtechnology.in — Curated free AI tools, copy-ready prompt templates, and Learning Zone guides.
 
-## Public pages
-- Home: /
-- Tools: /tools
-- Prompts: /prompts
-- Learning Zone: /learning
-- About: /about
-- Contact: /contact
+## Site purpose
+Free AI Tools Library helps users discover AI software, copy ChatGPT/Claude/Gemini prompts, and learn about AI agents, MCP servers, LLMs, and prompt engineering.
 
-## Content types
-- Tools: name, description, category, pricing, website URL
-- Prompts: title, content, category, complexity
-- Articles: title, excerpt, markdown content, difficulty, read time
+## Primary topics
+- Free AI tools directory (writing, coding, image, productivity)
+- AI prompt templates (copy-paste, categorized by skill level)
+- Tutorials: AI agents, MCP servers, LLM basics, prompt engineering, web integration, fine-tuning
 
-## API (for integrations)
-- Base: /api
-- Health: GET /api/health
+## Key public URLs
+- Home: https://freeaitools.wtechnology.in/
+- AI Tools: https://freeaitools.wtechnology.in/tools
+- Prompt Library: https://freeaitools.wtechnology.in/prompts
+- Learning Zone: https://freeaitools.wtechnology.in/learning
+- About: https://freeaitools.wtechnology.in/about
+- Contact: https://freeaitools.wtechnology.in/contact
+
+## Search
+- Tools: https://freeaitools.wtechnology.in/tools?search={query}
+- Prompts: https://freeaitools.wtechnology.in/prompts?search={query}
+
+## API
+- GET https://freeaitools.wtechnology.in/api/tools
+- GET https://freeaitools.wtechnology.in/api/prompts
+- GET https://freeaitools.wtechnology.in/api/articles
 
 ## Contact
-- hello@aitoolslib.com
+- https://freeaitools.wtechnology.in/contact
+
+Sitemap: https://freeaitools.wtechnology.in/sitemap.xml

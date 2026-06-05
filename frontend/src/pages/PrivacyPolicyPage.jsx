@@ -1,11 +1,16 @@
 import { Link } from 'react-router-dom'
 import LegalPageLayout from '../components/layout/LegalPageLayout'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 export default function PrivacyPolicyPage() {
   return (
     <>
-    <Seo title="Privacy Policy" description="Privacy Policy for AI Tools Library." path="/privacy" />
+    <Seo
+      title={PAGE_SEO.privacy.title}
+      description={PAGE_SEO.privacy.description}
+      path="/privacy"
+    />
     <LegalPageLayout title="Privacy Policy" subtitle="How we collect, use, and protect your information">
       <section>
         <h2 className="text-xl font-bold text-gray-900 dark:text-white">1. Information we collect</h2>

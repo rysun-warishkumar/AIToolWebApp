@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Search, Filter, Copy, X } from 'lucide-react'
+import { Search, Filter, X } from 'lucide-react'
 import { usePrompts, useCategories } from '../hooks/useQueries'
 import { debounce, copyToClipboard } from '../utils/helpers'
 import { PromptCard } from '../components/tools/ToolCard'
@@ -8,6 +8,7 @@ import { Pagination, ActiveFilters, EmptyState } from '../components/common/Pagi
 import { SkeletonList } from '../components/common/Skeleton'
 import { Toaster, toast } from 'sonner'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 export default function PromptsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -95,9 +96,14 @@ export default function PromptsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
       <Seo
-        title="AI Prompt Templates"
-        description="Browse copy-ready AI prompts by category and complexity."
+        title={PAGE_SEO.prompts.title}
+        description={PAGE_SEO.prompts.description}
+        keywords={PAGE_SEO.prompts.keywords}
         path="/prompts"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Prompts', url: '/prompts' },
+        ]}
       />
       <div className="bg-white dark:bg-dark-800 border-b border-gray-200 dark:border-dark-700 sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4 py-6">
@@ -215,16 +221,11 @@ export default function PromptsPage() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {data?.data?.map((prompt) => (
-                    <div key={prompt.id} className="relative">
-                      <PromptCard prompt={prompt} />
-                      <button
-                        onClick={() => handleCopyPrompt(prompt.content, prompt.title)}
-                        className="absolute top-4 right-4 p-2 rounded-lg bg-white dark:bg-dark-800 hover:bg-gray-100 dark:hover:bg-dark-700 shadow-sm"
-                        title="Copy prompt"
-                      >
-                        <Copy className="w-4 h-4" />
-                      </button>
-                    </div>
+                    <PromptCard
+                      key={prompt.id}
+                      prompt={prompt}
+                      onCopy={(p) => handleCopyPrompt(p.content, p.title)}
+                    />
                   ))}
                 </div>
 

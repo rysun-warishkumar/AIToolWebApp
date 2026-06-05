@@ -1,23 +1,38 @@
+# Free AI Tools Library — https://freeaitools.wtechnology.in
 User-agent: *
 Allow: /
 
-# AI / LLM crawlers (allow indexing of public content)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
 User-agent: GPTBot
 Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
 
-User-agent: Google-Extended
+User-agent: OAI-SearchBot
 Allow: /
 
 User-agent: anthropic-ai
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
 User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot-Extended
 Allow: /
 
 Disallow: /admin
 Disallow: /admin/
 
-Sitemap: https://your-domain.com/sitemap.xml
+Sitemap: https://freeaitools.wtechnology.in/sitemap.xml

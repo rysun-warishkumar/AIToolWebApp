@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Sparkles, Target, Users, Zap } from 'lucide-react'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 const values = [
   { icon: Target, title: 'Curated quality', desc: 'Every tool and prompt is reviewed so you spend less time searching and more time building.' },
@@ -12,7 +13,12 @@ const values = [
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
-      <Seo title="About Us" description="Learn about AI Tools Library — our mission to curate AI tools, prompts, and learning resources." path="/about" />
+      <Seo
+        title={PAGE_SEO.about.title}
+        description={PAGE_SEO.about.description}
+        keywords={PAGE_SEO.about.keywords}
+        path="/about"
+      />
       <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-purple-800 text-white py-20">
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_30%_20%,white,transparent_50%)]" />
         <div className="relative max-w-4xl mx-auto px-4 text-center">

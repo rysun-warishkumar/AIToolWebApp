@@ -7,7 +7,7 @@ import { getMediaUrl } from '../utils/helpers'
 import { SkeletonDetailPage } from '../components/common/Skeleton'
 import { articlesAPI } from '../services/api'
 import { recordOncePerSession } from '../utils/analytics'
-import Seo from '../components/seo/Seo'
+import Seo, { buildArticleSchema } from '../components/seo/Seo'
 import { SITE } from '../config/site'
 
 export default function LearningArticlePage() {
@@ -58,16 +58,7 @@ export default function LearningArticlePage() {
     advanced: 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300',
   }[article.difficulty] || 'bg-gray-100'
 
-  const articleJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: article.title,
-    description: article.excerpt,
-    author: { '@type': 'Organization', name: SITE.name },
-    publisher: { '@type': 'Organization', name: SITE.name },
-    timeRequired: `PT${article.read_time_minutes || 10}M`,
-    articleSection: article.category,
-  }
+  const articleJsonLd = buildArticleSchema(article)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
@@ -76,7 +67,14 @@ export default function LearningArticlePage() {
         description={article.excerpt || `${article.title} — ${SITE.tagline}`}
         path={`/learning/${article.slug}`}
         type="article"
+        image={article.cover_image_url ? getMediaUrl(article.cover_image_url) : undefined}
+        keywords={[article.category, article.difficulty, 'AI tutorial'].filter(Boolean)}
         jsonLd={articleJsonLd}
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'Learning Zone', url: '/learning' },
+          { name: article.title, url: `/learning/${article.slug}` },
+        ]}
       />
 
       <div className="bg-white dark:bg-dark-800 border-b border-gray-200 dark:border-dark-700">

@@ -7,6 +7,7 @@ import { ToolCard } from '../components/tools/ToolCard'
 import { Pagination, ActiveFilters, EmptyState } from '../components/common/Pagination'
 import { SkeletonList } from '../components/common/Skeleton'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
 
 export default function ToolsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -93,9 +94,14 @@ export default function ToolsPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
       <Seo
-        title="AI Tools Directory"
-        description="Browse and filter curated AI tools by category, pricing, and popularity."
+        title={PAGE_SEO.tools.title}
+        description={PAGE_SEO.tools.description}
+        keywords={PAGE_SEO.tools.keywords}
         path="/tools"
+        breadcrumbs={[
+          { name: 'Home', url: '/' },
+          { name: 'AI Tools', url: '/tools' },
+        ]}
       />
       {/* Header */}
       <div className="bg-white dark:bg-dark-800 border-b border-gray-200 dark:border-dark-700 sticky top-16 z-40">

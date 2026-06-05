@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Mail, MapPin, MessageSquare, Send } from 'lucide-react'
 import Seo from '../components/seo/Seo'
+import { PAGE_SEO } from '../config/seo'
+import { SITE } from '../config/site'
 import { toast } from 'sonner'
 
 export default function ContactPage() {
@@ -19,7 +21,12 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-dark-900">
-      <Seo title="Contact" description="Get in touch with the AI Tools Library team." path="/contact" />
+      <Seo
+        title={PAGE_SEO.contact.title}
+        description={PAGE_SEO.contact.description}
+        keywords={PAGE_SEO.contact.keywords}
+        path="/contact"
+      />
       <div className="bg-gradient-to-r from-primary-600 to-purple-600 text-white py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
@@ -33,8 +40,8 @@ export default function ContactPage() {
             <div className="card p-6">
               <Mail className="w-8 h-8 text-primary-600 mb-4" />
               <h3 className="font-semibold mb-2">Email</h3>
-              <a href="mailto:hello@aitoolslib.com" className="text-primary-600 hover:underline">
-                hello@aitoolslib.com
+              <a href={`mailto:${SITE.email}`} className="text-primary-600 hover:underline">
+                {SITE.email}
               </a>
             </div>
             <div className="card p-6">
