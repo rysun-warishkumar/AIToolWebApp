@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-seo-assets.mjs",
+    "prebuild": "node scripts/generate-seo-assets.mjs && node scripts/export-sitemap.mjs",
+    "export-sitemap": "node scripts/export-sitemap.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",

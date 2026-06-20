@@ -33,14 +33,25 @@ const upload = multer({
     else cb(new Error('Only image files are allowed'))
   },
 })
-const corsOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:5173', 'http://localhost:5174']
+const normalizeOrigin = (url) => (url || '').trim().replace(/\/$/, '')
+
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map(normalizeOrigin).filter(Boolean)
+  : ['http://localhost:5173', 'http://localhost:5174']
+
 const jwtSecret = process.env.JWT_SECRET || 'supersecret'
 const jwtExpiry = process.env.JWT_EXPIRY || '86400'
 
-app.use(cors({ 
-  origin: corsOrigins, 
-  credentials: true 
-}))
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true)
+      const allowed = corsOrigins.includes(normalizeOrigin(origin))
+      callback(null, allowed)
+    },
+    credentials: true,
+  })
+)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/uploads', express.static(uploadPath))
@@ -220,8 +231,12 @@ app.get('/sitemap.xml', async (_req, res) => {
       { loc: '/cookie-policy', pri: '0.3', freq: 'yearly' },
     ]
 
-    const tools = await query('SELECT id, updated_at FROM tools WHERE status = "published" ORDER BY id')
-    const prompts = await query('SELECT id, updated_at FROM prompts WHERE status = "published" ORDER BY id')
+    const tools = await query(
+      'SELECT id, updated_at FROM tools WHERE status = "published" AND deleted_at IS NULL ORDER BY id'
+    )
+    const prompts = await query(
+      'SELECT id, updated_at FROM prompts WHERE status = "published" AND deleted_at IS NULL ORDER BY id'
+    )
     const articles = await query(
       'SELECT slug, updated_at FROM learning_articles WHERE status = "published" ORDER BY id'
     )

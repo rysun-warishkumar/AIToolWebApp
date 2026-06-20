@@ -100,16 +100,5 @@ Sitemap: ${siteUrl}/sitemap.xml
 
 fs.writeFileSync(path.join(publicDir, 'robots.txt'), robots)
 fs.writeFileSync(path.join(publicDir, 'llms.txt'), llms)
-
-const staticSitemapUrls = ['/', '/tools', '/prompts', '/learning', '/about', '/contact', '/privacy', '/terms', '/cookie-policy']
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${staticSitemapUrls
-  .map(
-    (p) => `  <url><loc>${siteUrl}${p === '/' ? '/' : p}</loc><changefreq>${p === '/' ? 'daily' : 'weekly'}</changefreq></url>`
-  )
-  .join('\n')}
-</urlset>
-`
-fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap)
 console.log(`SEO assets generated for ${siteUrl}`)
+console.log('Run npm run export-sitemap to refresh sitemap.xml from the API (or use dynamic GET /sitemap.xml on the backend).')

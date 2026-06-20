@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const siteUrl = env.VITE_SITE_URL || 'https://freeaitools.wtechnology.in'
+  const siteUrl = env.VITE_SITE_URL || 'http://localhost:5173'
 
   return {
     plugins: [
@@ -20,6 +20,10 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+        },
+        '/uploads': {
           target: 'http://localhost:3001',
           changeOrigin: true,
         },

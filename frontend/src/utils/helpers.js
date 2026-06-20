@@ -10,7 +10,9 @@ export const getMediaUrl = (url) => {
   if (!url) return ''
   if (url.startsWith('http')) return url
   const api = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
-  const origin = api.replace(/\/api\/?$/, '')
+  const origin = api.startsWith('/')
+    ? (typeof window !== 'undefined' ? window.location.origin : '')
+    : api.replace(/\/api\/?$/, '')
   return `${origin}${url.startsWith('/') ? url : `/${url}`}`
 }
 
